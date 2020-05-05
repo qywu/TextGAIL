@@ -1,0 +1,16 @@
+text_gail:
+    batch_size: None # it should be set in the training batch size
+    ppo_buffer_size: 128
+    sample_batch_size: 32
+    ppo_mini_batch_size: 8
+    ppo_epoch: 1
+    ppo_epsilon: 0.2
+    mix_human_demo_init_ratio: 0.4
+    mix_human_demo_ratio_warmup_steps: 100
+    # Pre-train discriminator first
+    discriminator_pretrain_steps: 200
+    # whehter a human demostration's reward is determined by the reward function
+    constant_human_demo_reward: True
+    # due to precision problems when autoregressive generating
+    # it might need to recompute log_probs
+    recompute_log_probs: True

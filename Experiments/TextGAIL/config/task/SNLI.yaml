@@ -1,0 +1,4 @@
+task:
+    name: SNLI
+    data_dir: /home/wuqy1203/Desktop/Projects/TextGAIL/data/SNLI
+    weights_path: /home/wuqy1203/Desktop/Projects/TextGAIL/Experiments/MLE/outputs/SNLI/Checkpoints/iter_5729_model_state.pth
