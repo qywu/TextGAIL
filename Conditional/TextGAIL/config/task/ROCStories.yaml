@@ -1,0 +1,4 @@
+task:
+    name: ROCStories
+    data_dir: ../../../../data/ROCStories
+    weights_path: ""

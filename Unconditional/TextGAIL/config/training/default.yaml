@@ -1,0 +1,36 @@
+training:
+    random_seed: 1
+    num_gpus_per_node: 1
+    batch_size: 32
+    resume:
+        resume: False
+        resume_model: True
+        resume_optimizer: True
+        resume_scheduler: True
+        resume_rng_state: True
+    checkpointing:
+        directory: "Checkpoints"
+        steps_interval: -1
+        seconds_interval: -1
+        num_checkpoints_to_keep: 1000
+        keep_checkpoint_every_num_seconds: 86400
+    logging:
+        level: "INFO"
+        steps_interval: -1 # disabled when negative
+        seconds_interval: 2 # disabled when `steps_interval` is set
+    optimization:
+        fp16: True
+        fp16_opt_level: O1
+        optimizer_name: AdamW
+        learning_rate: 2e-5
+        gradient_accumulation_steps: 1
+        weight_decay: 0.01
+        max_gradient_norm: -1.0
+        warmup:
+            scheduler_name: WarmupLinear
+            warmup_steps: 100
+    validation:
+        steps_interval: -1 # after every epoch or none 
+    total_num:
+        epochs: 10
+        update_steps: -1 # disabled when total_num_epochs > 0

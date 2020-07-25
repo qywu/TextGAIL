@@ -1,0 +1,3 @@
+task:
+    name: COCO
+    data_dir: ../../../../data/COCO

@@ -1,0 +1,17 @@
+fast_bleu
+tqdm
+nltk
+dill
+torch
+ray==0.8.2
+regex
+transformers==2.5.1
+hydra-core
+hydra-colorlog
+colorlog==4.1.0
+tensorboard
+tqdm
+gdown
+scikit-learn
+overrides
+pyarrow

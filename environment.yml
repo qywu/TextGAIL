@@ -1,0 +1,22 @@
+name: torchfly
+channels:
+  - defaults
+  - conda-forge
+  - pytorch
+dependencies:
+  - pytorch
+  - torchvision
+#  - cudatoolkit=10.1
+  - pip:
+    - ray
+    - regex
+    - transformers==2.5.1
+    - hydra-core
+    - hydra-colorlog
+    - colorlog
+    - tensorboard
+    - tqdm
+    - gdown
+    - scikit-learn
+    - overrides
+    - pyarrow

@@ -1,0 +1,4 @@
+task:
+    name: COCO
+    data_dir: ../../../../data/COCO
+    weights_path: model_state.pth

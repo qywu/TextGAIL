@@ -1,0 +1,3 @@
+task:
+    name: ROCStories
+    data_dir: ../../../../data/ROCStories

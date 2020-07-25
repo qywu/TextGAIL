@@ -1,0 +1,5 @@
+task:
+    name: CommonGEN
+    data_dir: ../../../../data/CommonGEN
+    mle_weights_path: ""
+    textgail_weights_path:  ""

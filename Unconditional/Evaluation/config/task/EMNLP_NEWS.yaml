@@ -1,0 +1,5 @@
+task:
+    name: EMNLP_NEWS
+    data_dir: ../../../data/EMNLP_NEWS
+    mle_weights_path: ""
+    textgail_weights_path: ""

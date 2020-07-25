@@ -1,0 +1,4 @@
+task:
+    name: EMNLP_NEWS
+    data_dir: ../../../../data/EMNLP_NEWS
+    weights_path: model_state.pth

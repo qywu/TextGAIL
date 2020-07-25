@@ -1,0 +1,3 @@
+task:
+    name: EMNLP_NEWS
+    data_dir: ../../../../data/EMNLP_NEWS

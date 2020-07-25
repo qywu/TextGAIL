@@ -1,0 +1,14 @@
+decode:
+    num_return_sequences: 1
+    max_steps: 100
+    do_sample: True
+    num_beams: 1
+    temperature: 0.9
+    top_k: -1
+    top_p: 0.9
+    length_penalty: 1.0
+    bos_token_ids: [0] # <s>
+    eos_token_ids: [2] # </s>
+    output_log_probs: True
+    early_stopping: False
+    repetition_penalty: 1.0
