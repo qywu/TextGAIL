@@ -1,4 +1,0 @@
-task:
-    name: CommonGEN
-    data_dir: /home/wuqy1203/Desktop/Projects/TextGAIL/data/CommonGEN
-    weights_path: /home/wuqy1203/Desktop/Projects/TextGAIL/Experiments/MLE/outputs/CommonGEN/Checkpoints/iter_2439_model_state.pth

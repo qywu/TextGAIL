@@ -1,13 +1,15 @@
-hydra:
-    run: # specify the working directory
-      dir: ./outputs/ROCStories # ./outputs/${now:%Y-%m-%d}/${now:%H-%M-%S} #./outputs/exp1 # 
-defaults:
-    - task: ROCStories
-    - hydra/job_logging: colorlog
-    - hydra/hydra_logging: colorlog
-    - training: ROCStories
+flyconfig:
+    run:
+        # Specify the working directory
+        # ./outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
+        dir: ./outputs/${task.name}
+subconfigs:
+    - task: ${task.name}
+    - training: ${task.name}
     - model: roberta-tokenized-gpt2
-    - text_gail: ROCStories
+    - text_gail: ${task.name}
     - decode: default
+task:
+    name: CommonGEN
 
-# DailyDialog, CommonGEN, ROCStories
+# CommonGEN, ROCStories

@@ -44,8 +44,10 @@ class TextGAILTrainerLoop(TrainerLoop):
 
         self.replay_buffer = TextRLReplayBuffer(max_buffer_size=self.ppo_buffer_size)
 
+        self.tmp_vars = {}
+
         # Configuration Check
-        if self.gradient_accumulation_steps != 1:
+        if self.gradient_accumulation_batches != 1:
             raise ValueError("Please set gradient accumulation steps to 1!")
 
         if self.training_in_epoch:
@@ -112,7 +114,7 @@ class TextGAILTrainerLoop(TrainerLoop):
                     states, actions, action_log_probs, rewards, normalized_rewards = zip(*mini_batch)
                     self.tmp_vars["log_dict"] = self.train_discriminator_step(states, actions)
 
-                    if (self.discriminator_step_count + 1) % self.gradient_accumulation_steps == 0:
+                    if (self.discriminator_step_count + 1) % self.gradient_accumulation_batches == 0:
                         # self.callback_handler.fire_event(Events.STEP_BEGIN)
                         self.D_optimizer.step()
                         self.D_scheduler.step()
@@ -145,7 +147,7 @@ class TextGAILTrainerLoop(TrainerLoop):
 
                         self.tmp_vars["log_dict"] = self.train_generator_step(ppo_batch)
 
-                        if (self.generator_step_count + 1) % self.gradient_accumulation_steps == 0:
+                        if (self.generator_step_count + 1) % self.gradient_accumulation_batches == 0:
                             # self.callback_handler.fire_event(Events.STEP_BEGIN)
                             self.G_optimizer.step()
                             self.G_scheduler.step()
@@ -160,7 +162,7 @@ class TextGAILTrainerLoop(TrainerLoop):
                     log_dict = self.train_discriminator_step(states, actions)
                     self.tmp_vars["log_dict"].update(log_dict)
 
-                    if (self.discriminator_step_count + 1) % self.gradient_accumulation_steps == 0:
+                    if (self.discriminator_step_count + 1) % self.gradient_accumulation_batches == 0:
                         # self.callback_handler.fire_event(Events.STEP_BEGIN)
                         self.D_optimizer.step()
                         self.D_scheduler.step()
@@ -178,7 +180,7 @@ class TextGAILTrainerLoop(TrainerLoop):
 
             # Only rank 0 can run the validation dataset
             if self.rank == 0:
-                if (self.global_step_count + 1) % self.validation_steps_interval == 0:
+                if (self.global_step_count + 1) % self.config.training.evaluation.steps_interval == 0:
                     if not self.validation_dataloader is None:
                         self.model.eval()
                         # BEGIN
@@ -196,11 +198,11 @@ class TextGAILTrainerLoop(TrainerLoop):
         results = self.reward_func.get_loss(states, actions)
 
         self.callback_handler.fire_event(Events.BACKWARD_BEGIN)
-        loss = results["loss"] / self.gradient_accumulation_steps
+        loss = results["loss"] / self.gradient_accumulation_batches
         self.loss_backward(loss)
         self.callback_handler.fire_event(Events.BACKWARD_END)
         # return the results
-        log_dict = {"discriminator/loss": loss.item() * self.gradient_accumulation_steps}
+        log_dict = {"discriminator/loss": loss.item() * self.gradient_accumulation_batches}
 
         return log_dict
 
@@ -232,7 +234,7 @@ class TextGAILTrainerLoop(TrainerLoop):
 
         # Backward Loss
         self.callback_handler.fire_event(Events.BACKWARD_BEGIN)
-        loss = loss / self.gradient_accumulation_steps
+        loss = loss / self.gradient_accumulation_batches
         self.loss_backward(loss)
         self.callback_handler.fire_event(Events.BACKWARD_END)
 
@@ -241,7 +243,7 @@ class TextGAILTrainerLoop(TrainerLoop):
             approx_kl = (log_probs - old_log_probs).pow(2).mean()
 
         log_dict = {}
-        log_dict["generator/loss"] = loss.item() * self.gradient_accumulation_steps
+        log_dict["generator/loss"] = loss.item() * self.gradient_accumulation_batches
         log_dict["generator/policy_loss"] = policy_loss.item()
         log_dict["generator/clip_frac"] = clip_frac.item()
         log_dict["generator/approx_kl"] = approx_kl.item()

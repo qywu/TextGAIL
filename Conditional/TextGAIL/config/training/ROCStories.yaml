@@ -1,13 +1,11 @@
 training:
+    fp16: False
     random_seed: 1
     num_gpus_per_node: 1
     batch_size: 32
+    gradient_accumulation_batches: 1
     resume:
         resume: False
-        resume_model: True
-        resume_optimizer: True
-        resume_scheduler: True
-        resume_rng_state: True
     total_num:
         epochs: -1
         update_steps: 2000 # disabled when total_num_epochs > 0
@@ -24,13 +22,15 @@ training:
         steps_interval: -1 # disabled when negative
         seconds_interval: 2 # disabled when `steps_interval` is set
     optimization:
-        fp16: False
-        fp16_opt_level: O1
         optimizer_name: AdamW
         learning_rate: 1e-5
-        gradient_accumulation_steps: 1
         weight_decay: 0.01
         max_gradient_norm: -1.0
-        warmup:
-            scheduler_name: WarmupLinear
-            warmup_steps: 1000
+    scheduler:
+        scheduler_name: WarmupLinear
+        warmup_steps: 1000
+    evaluation:
+        steps_interval: 50 # after every epoch or none 
+    total_num:
+        epochs: -1
+        update_steps: 1000 # disabled when total_num_epochs > 0

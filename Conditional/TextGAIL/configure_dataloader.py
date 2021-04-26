@@ -37,23 +37,27 @@ class DataLoaderHandler:
         self.config = config
         self.tokenizer = AutoTokenizer.from_pretrained("roberta-base")
 
-    def train_dataloader(self, config):
+    def train_dataloader(self):
 
-        train_filename = os.path.join(config.task.data_dir, f"train.jsonl")
+        train_filename = os.path.join(self.config.task.data_dir, f"train.jsonl")
         train_dataset = Seq2SeqDataset(train_filename, self.tokenizer)
         train_dataloader = DataLoader(
-            train_dataset, batch_size=config.training.batch_size, shuffle=True, collate_fn=lazy_collate, drop_last=True
+            train_dataset,
+            batch_size=self.config.training.batch_size,
+            shuffle=True,
+            collate_fn=lazy_collate,
+            drop_last=True
         )
         return train_dataloader
 
-    def valid_dataloader(self, config):
-        valid_filename = os.path.join(config.task.data_dir, f"val.jsonl")
+    def valid_dataloader(self):
+        valid_filename = os.path.join(self.config.task.data_dir, f"val.jsonl")
         val_dataset = Seq2SeqDataset(valid_filename, self.tokenizer)
-        val_dataloader = DataLoader(val_dataset, batch_size=config.training.batch_size, collate_fn=lazy_collate)
+        val_dataloader = DataLoader(val_dataset, batch_size=self.config.training.batch_size, collate_fn=lazy_collate)
         return val_dataloader
 
-    def test_dataloader(self, config):
-        valid_filename = os.path.join(config.task.data_dir, f"test.jsonl")
+    def test_dataloader(self):
+        valid_filename = os.path.join(self.config.task.data_dir, f"test.jsonl")
         val_dataset = Seq2SeqDataset(valid_filename, self.tokenizer)
-        val_dataloader = DataLoader(val_dataset, batch_size=config.training.batch_size, collate_fn=lazy_collate)
+        val_dataloader = DataLoader(val_dataset, batch_size=self.config.training.batch_size, collate_fn=lazy_collate)
         return val_dataloader

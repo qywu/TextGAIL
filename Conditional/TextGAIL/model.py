@@ -6,18 +6,16 @@ from transformers import AutoTokenizer, RobertaForMultipleChoice
 
 import torchfly
 from torchfly.nn.transformers import GPT2LMHeadModel
-from torchfly.training import FlyModule
+from torchfly.training import FlyModel
 from torchfly.nn.losses import SequenceCrossEntropyLoss
-from torchfly.metrics import Average
+from torchfly.metrics import CategoricalAccuracy, Average, MovingAverage, Speed
 from torchfly.common.download import get_pretrained_weights
 from torchfly.text.decode import TransformerDecoder
-
-
 
 # pylint: disable=no-member
 
 
-class TextGAILModel(FlyModule):
+class TextGAILModel(FlyModel):
     def __init__(self, config):
         super().__init__(config)
         self.generator = Generator(config)
@@ -42,7 +40,8 @@ class TextGAILModel(FlyModule):
         metrics = {"perplexity": ppl}
         return metrics
 
-class Generator(FlyModule):
+
+class Generator(FlyModel):
     def __init__(self, config):
         super().__init__(config)
         self.config = config
@@ -59,13 +58,12 @@ class Generator(FlyModule):
         # print(self.encoder.load_state_dict(model_weights, strict=False))
         self.rl_mode = True
 
-
     def forward(self, batch):
         batch["source_mask"] = batch["source_token_ids"] != self.tokenizer.pad_token_id
         batch["target_mask"] = batch["target_token_ids"] != self.tokenizer.pad_token_id
         batch["source_position_ids"] = batch["source_mask"].cumsum(-1) - 1
-        batch["target_position_ids"] = batch["source_position_ids"][:, -1].unsqueeze(-1
-                                                                                    ) + batch["target_mask"].cumsum(-1)
+        batch["target_position_ids"] = batch["source_position_ids"][:,
+                                                                    -1].unsqueeze(-1) + batch["target_mask"].cumsum(-1)
 
         # encoder part
         _, past = self.encoder(
@@ -91,11 +89,9 @@ class Generator(FlyModule):
             logits = logits[:, :-1].contiguous()
             target_token_ids = batch["target_token_ids"][:, 1:].contiguous()
             log_probs = torch.log_softmax(logits, dim=-1)
-            log_probs = torch.gather(log_probs,
-                                    dim=-1,
-                                    index=target_token_ids.unsqueeze(-1)).squeeze(-1)
+            log_probs = torch.gather(log_probs, dim=-1, index=target_token_ids.unsqueeze(-1)).squeeze(-1)
             # mask
-            log_probs = (log_probs * batch["target_mask"][:, 1:]).sum(-1) # / mask.sum(-1)
+            log_probs = (log_probs * batch["target_mask"][:, 1:]).sum(-1)  # / mask.sum(-1)
 
             results = {"log_probs": log_probs, "loss": 0.0}
 
@@ -106,8 +102,8 @@ class Generator(FlyModule):
         batch["source_mask"] = batch["source_token_ids"] != self.tokenizer.pad_token_id
         batch["target_mask"] = batch["target_token_ids"] != self.tokenizer.pad_token_id
         batch["source_position_ids"] = batch["source_mask"].cumsum(-1) - 1
-        batch["target_position_ids"] = batch["source_position_ids"][:, -1].unsqueeze(-1
-                                                                                    ) + batch["target_mask"].cumsum(-1)
+        batch["target_position_ids"] = batch["source_position_ids"][:,
+                                                                    -1].unsqueeze(-1) + batch["target_mask"].cumsum(-1)
 
         # encoder part
         _, past = self.encoder(
@@ -133,11 +129,9 @@ class Generator(FlyModule):
             logits = logits[:, :-1].contiguous()
             target_token_ids = batch["target_token_ids"][:, 1:].contiguous()
             log_probs = torch.log_softmax(logits, dim=-1)
-            log_probs = torch.gather(log_probs,
-                                    dim=-1,
-                                    index=target_token_ids.unsqueeze(-1)).squeeze(-1)
+            log_probs = torch.gather(log_probs, dim=-1, index=target_token_ids.unsqueeze(-1)).squeeze(-1)
             # mask
-            log_probs = (log_probs * batch["target_mask"][:, 1:]).sum(-1) # / mask.sum(-1)
+            log_probs = (log_probs * batch["target_mask"][:, 1:]).sum(-1)  # / mask.sum(-1)
         return {"log_probs": log_probs}
 
     def predict(self, batch):
@@ -181,7 +175,7 @@ class Generator(FlyModule):
         return model_inputs
 
 
-class Discriminator(FlyModule):
+class Discriminator(FlyModel):
     def __init__(self, config):
         super().__init__(config)
         self.config = config
@@ -192,4 +186,4 @@ class Discriminator(FlyModule):
         logits = self.model(batch["input_ids"])[0]
         log_probs = F.log_softmax(logits, dim=-1)
         loss = -log_probs[:, 0].mean()
-        return {"reward": log_probs[:, 1].exp(), "loss":loss}
+        return {"reward": log_probs[:, 1].exp(), "loss": loss}

@@ -1,0 +1,30 @@
+# data
+data
+!torchfly/training/data
+*.arrow
+*.hdf5
+*.pa
+*.json
+*.jsonl
+*.txt
+!requirements.txt
+*.db
+# log files
+*.log
+outputs
+runs
+# pickle and torch files
+*.pth
+*.th
+*.pkl
+# c++ compiles
+*.o
+*.so
+# misc
+__pycache__
+*.egg-info
+.ipynb_checkpoints
+# No MAC
+.DS_Store
+# website
+site
