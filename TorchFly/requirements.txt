@@ -1,0 +1,12 @@
+gdown
+nlp
+tensorboard
+torch
+transformers
+tqdm
+regex
+overrides
+omegaconf
+pyarrow
+colorlog
+hydra-core

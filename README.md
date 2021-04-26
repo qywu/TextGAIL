@@ -4,7 +4,7 @@ This is the repository for the paper: TextGAIL: [Generative Adversarial Imitatio
 
 ## Requirements
 
-TorchFly (https://github.com/qywu/TorchFly) is needed for all dependencies.
+TorchFly (https://github.com/qywu/TorchFly) is needed for all dependencies. It is included in this repository.
 
 ## Datasets
 

@@ -1,0 +1,43 @@
+#
+# This file contains the default configuration for TrainerLoop
+#
+training:
+    random_seed: 123
+    fp16: False
+    num_gpus_per_node: 1
+    batch_size: 16
+    gradient_accumulation_batches: 1
+    resume:
+        resume: False
+        resume_model: True
+        resume_optimizer: True
+        resume_scheduler: True
+        resume_rng_state: True
+    checkpointing:
+        async_save: false
+        directory: "Checkpoints"
+        steps_interval: -1
+        seconds_interval: -1
+        num_checkpoints_to_keep: 999999
+        keep_checkpoint_every_num_seconds: 86400 # every 24 hrs
+    logging:
+        level: "INFO"
+        steps_interval: -1 # disabled when negative
+        seconds_interval: 2 # disabled when `steps_interval` is set
+    optimization:
+        optimizer_name: AdamW
+        learning_rate: 1e-3
+        weight_decay: 0.01
+        max_gradient_norm: -1
+    scheduler:
+        scheduler_name: WarmupLinear
+        eta_min: 1e-6
+        warmup_steps: 0
+    evaluation:
+        batch_size: 16
+        seconds_interval: -1
+        steps_interval: -1 # -1 for after every epoch, but will be disabled if total_num.epochs = -1
+        after_num_steps: 0
+    total_num:
+        epochs: 10
+        update_steps: -1 # disabled when total_num.epochs < 0

@@ -1,0 +1,4 @@
+training:
+    num_nodes: -1
+    num_gpus_per_node: 2
+    batch_size: 32

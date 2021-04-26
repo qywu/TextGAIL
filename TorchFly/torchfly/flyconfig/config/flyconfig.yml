@@ -1,0 +1,17 @@
+subconfigs:
+  - flyconfig/logging : default   # FlyConfig's logging config
+  - flyconfig/output: default     # Output directory
+  - training: default             # default training config
+
+flyconfig:
+  run: ???              # Normal run output configuration
+  logging: ???          # Logging configuration for FlyConfig
+
+  # populated at runtime
+  runtime:
+    cwd: ???        # Original working directory the app was executed from
+
+  # Output directory for produced configuration files and overrides.
+  # E.g., flyconfig.yaml, overrides.yaml will go here. Useful for debugging
+  # and extra context when looking at past runs.
+  output_subdir: ".flyconfig"

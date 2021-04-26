@@ -1,0 +1,8 @@
+site_name: TorchFly
+nav:
+    - Home: index.md
+    - FlyData
+    - Training:
+        - Callbacks: callback_priority.md
+    - About: about.md
+theme: readthedocs
