@@ -5,7 +5,7 @@ dill
 torch
 ray==0.8.2
 regex
-transformers==2.5.1
+transformers==4.30.0
 hydra-core
 hydra-colorlog
 colorlog==4.1.0
